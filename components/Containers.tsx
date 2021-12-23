@@ -1,4 +1,12 @@
-import { Text, Box, BoxProps, Heading, FlexProps } from "@chakra-ui/react";
+import {
+  Text,
+  Box,
+  BoxProps,
+  Heading,
+  FlexProps,
+  Flex,
+  Image,
+} from "@chakra-ui/react";
 
 export const MetricHeading: React.FC<BoxProps> = ({ children, ...rest }) => (
   <Text
@@ -43,5 +51,25 @@ export const Value: React.FC<ValueProps> = ({
         {heading}
       </Text>
     </Box>
+  );
+};
+
+interface BuildContainerProps {
+  size: string;
+  src: string;
+  key?: any;
+}
+
+export const BuildContainer: React.FC<BuildContainerProps> = ({
+  size,
+  src,
+  key,
+  children,
+}) => {
+  return (
+    <Flex align="center" gridGap={2} key={key}>
+      <Image width={size} height={size} src={src} rounded="md" alt={src} />
+      <Box>{children}</Box>
+    </Flex>
   );
 };

@@ -4,11 +4,14 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  Spinner,
   useBreakpointValue,
 } from "@chakra-ui/react";
 import React from "react";
 import { BsSearch } from "react-icons/bs";
-import { useOutsideClick } from "../../util/hooks/useOutsideClick";
+import { useDebounce } from "../util/hooks/handlers/useDebounce";
+import { useOutsideClick } from "../util/hooks/handlers/useOutsideClick";
+import { useSearchQuery } from "../util/queries/useSearchQuery";
 import { UserCard } from "./UserCard";
 
 interface SearchbarInputProps {
@@ -53,14 +56,14 @@ const SearchbarInput: React.FC<SearchbarInputProps> = ({
 
 interface SearchResultProps {
   active: boolean;
+  isLoading: boolean;
   result: any[];
-  clearInput: () => void;
 }
 
 const SearchResult: React.FC<SearchResultProps> = ({
   active,
   result,
-  clearInput,
+  isLoading,
 }) => {
   return active ? (
     <Flex
@@ -73,25 +76,31 @@ const SearchResult: React.FC<SearchResultProps> = ({
         maxH="70vh"
         zIndex={99}
         background="#171717"
-        w={result.length > 9 ? "333px" : "333px"}
-        overflow="auto"
+        w={result && result.length > 9 ? "333px" : "333px"}
+        overflow={isLoading ? "hidden" : "auto"}
         roundedBottom="md"
         position="absolute"
         align="center">
-        {result.map((item: any) => {
-          const parsed = item.platformUserHandle.split("#");
-          return (
-            <Box key={item.platformUserId} flex={1} w="100%" px={2}>
-              <UserCard
-                setData={clearInput}
-                id={item.platformUserId}
-                avatarUrl={item.avatarUrl}
-                parsed={parsed}
-                status={item.status}
-              />
-            </Box>
-          );
-        })}
+        {isLoading ? (
+          <Box py={2}>
+            <Spinner color="#fbd000" />
+          </Box>
+        ) : (
+          result &&
+          result.map((item: any) => {
+            const parsed = item.platformUserHandle.split("#");
+            return (
+              <Box key={item.platformUserId} flex={1} w="100%" px={2}>
+                <UserCard
+                  id={item.platformUserId}
+                  avatarUrl={item.avatarUrl}
+                  parsed={parsed}
+                  status={item.status}
+                />
+              </Box>
+            );
+          })
+        )}
       </Flex>
     </Flex>
   ) : null;
@@ -117,11 +126,10 @@ const Overlay: React.FC<OverlayProps> = ({ active }) => {
 
 export const Searchbar: React.FC = () => {
   const [input, setInput] = React.useState<string>("");
-  const [searchResult, setSearchResult] = React.useState<any[]>([]);
+  const debouncedInput = useDebounce(input, 300);
+
   const [active, setActive] = React.useState<boolean>(false);
-
   const overlay = useBreakpointValue({ base: true, lg: false });
-
   const ref = React.useRef<HTMLDivElement>(null);
 
   useOutsideClick(ref, () => {
@@ -130,43 +138,22 @@ export const Searchbar: React.FC = () => {
     setActive(false);
   });
 
-  React.useEffect(() => {
-    const debounce = setTimeout(async () => {
-      if (input === "") return; // avoid unncessary initial query
-      setActive(true);
-      const response = await fetch(
-        `http://localhost:4000/destiny/users/${encodeURIComponent(input)}`,
-        {
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-          },
-        }
-      );
-      console.log(response);
-      const json = await response.json();
+  const { isLoading, isError, isSuccess, data } =
+    useSearchQuery(debouncedInput);
 
-      setSearchResult(json.data);
-    }, 1000);
-
-    return () => clearTimeout(debounce);
-  }, [input]);
-
+  const shouldRender = data && data.length > 0;
   return (
     <React.Fragment>
       <Box ref={ref} zIndex={1}>
         <SearchbarInput
           onFocus={() => setActive(true)}
           onChange={(event) => setInput(event.target.value)}
-          roundedBottom={active && searchResult.length > 0 ? "none" : "md"}
+          roundedBottom={active ? "none" : "md"}
           value={input}
         />
-        <SearchResult
-          active={!!active && searchResult.length > 0}
-          result={searchResult}
-          clearInput={() => setInput("")}
-        />
+        <SearchResult active={!!active} isLoading={isLoading} result={data} />
       </Box>
-      <Overlay active={!!active && searchResult.length > 0 && !!overlay} />
+      <Overlay active={!!active && shouldRender > 0 && !!overlay} />
     </React.Fragment>
   );
 };

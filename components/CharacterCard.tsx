@@ -1,13 +1,23 @@
 import { Box, Flex, Heading, Text } from "@chakra-ui/react";
-import { useDataContext } from "../../../../util/DataContext";
+import { useDataContext } from "../util/DataContext";
+import { useOverviewQuery } from "../util/queries/useOverviewQuery";
+import { Character } from "../util/types";
 
 interface CharacterCardProps {
   isSmall?: boolean;
+  backgroundImage: string;
+  className: string;
+  race: string;
+  lightLevel: number;
 }
 
-export const CharacterCard: React.FC<CharacterCardProps> = ({ isSmall }) => {
-  const { profileData } = useDataContext();
-
+export const CharacterCard: React.FC<CharacterCardProps> = ({
+  isSmall,
+  backgroundImage,
+  className,
+  race,
+  lightLevel,
+}) => {
   return (
     <Box
       p={4}
@@ -15,16 +25,16 @@ export const CharacterCard: React.FC<CharacterCardProps> = ({ isSmall }) => {
       backgroundRepeat="no-repeat"
       backgroundPosition={isSmall ? "center" : "initial"}
       backgroundSize={isSmall ? "cover" : "initial"}
-      backgroundImage={profileData!.character.backgroundImage}>
+      backgroundImage={backgroundImage}>
       <Flex align="center" justify="space-between" p="8px 34px 24px 80px">
         <Box>
           <Heading color="white" size="md">
-            {profileData!.character.class}
+            {className}
           </Heading>
-          <Text color="white">{profileData!.character.race}</Text>
+          <Text color="white">{race}</Text>
         </Box>
         <Heading size="md" color="#F4DC57">
-          ✦{profileData!.character.lightLevel}
+          ✦{lightLevel}
         </Heading>
       </Flex>
     </Box>

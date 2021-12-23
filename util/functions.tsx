@@ -1,4 +1,5 @@
 import { IoLogoPlaystation, IoLogoSteam, IoLogoXbox } from "react-icons/io";
+import { Match } from "./types";
 
 export const mapIcon = (n: number): JSX.Element | null => {
   switch (n) {
@@ -29,3 +30,28 @@ export const calculateTimePlayed = (seconds: number) => {
 
 export const color = (value: number, base: number) =>
   value > base ? "green.500" : value === base ? "white" : "red.500";
+
+export const sortMatchesCallback = (value: string, matches: Match[]) => {
+  switch (value) {
+    case "All":
+      return matches.sort(
+        (a, b) => new Date(b.period).getTime() - new Date(a.period).getTime()
+      );
+    case "Kills":
+      return matches.sort((a, b) => b.kills - a.kills);
+    case "Deaths":
+      return matches.sort((a, b) => b.deaths - a.deaths);
+    case "K/D":
+      return matches.sort((a, b) => b.killsDeathsRatio - a.killsDeathsRatio);
+    case "Wins":
+      return matches.sort((a, b) => a.standing - b.standing);
+    case "Losses":
+      return matches.sort((a, b) => b.standing - a.standing);
+    case "Map":
+      return matches.sort((a, b) =>
+        a.displayProperties.name.localeCompare(b.displayProperties.name)
+      );
+    default:
+      return matches;
+  }
+};

@@ -1,6 +1,6 @@
 import { Box, Heading, Stack, Flex, Text, Image } from "@chakra-ui/react";
-import { useDataContext } from "../../../../util/DataContext";
-import { OverviewResponse } from "../../../../util/types";
+import { useOverviewQuery } from "../../../util/queries/useOverviewQuery";
+import { OverviewResponse } from "../../../util/types";
 import { Value } from "../../Containers";
 
 interface CharacterProps {
@@ -12,8 +12,7 @@ interface CharacterProps {
 const Character: React.FC<CharacterProps> = ({ index, data, offset }) => {
   const item = offset !== undefined ? offset : index;
 
-  console.log(data!.bestGame.characters[item]);
-  return (
+  return data ? (
     <Flex justify="space-between" flex={1} pr={4}>
       <Flex align="center" gridGap={2}>
         <Image
@@ -57,25 +56,25 @@ const Character: React.FC<CharacterProps> = ({ index, data, offset }) => {
         />
       </Flex>
     </Flex>
-  );
+  ) : null;
 };
 
 export const BestGame: React.FC = () => {
-  const { overviewData: data } = useDataContext();
+  const { data } = useOverviewQuery();
 
-  return (
+  return data && data.Response ? (
     <Box px={8}>
       <Heading size="md" color="white">
-        {data!.bestGame.displayProperties.name}
+        {data.Response.bestGame.displayProperties.name}
       </Heading>
       <Stack spacing={5} my={2}>
         {[0, 1, 2].map((item) => (
           <Flex key={item} justify="space-between">
-            <Character data={data!} index={item} />
-            <Character data={data!} index={item} offset={5 - item} />
+            <Character data={data!.Response} index={item} />
+            <Character data={data!.Response} index={item} offset={5 - item} />
           </Flex>
         ))}
       </Stack>
     </Box>
-  );
+  ) : null;
 };

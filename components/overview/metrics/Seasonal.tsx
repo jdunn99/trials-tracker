@@ -1,43 +1,43 @@
 import { Flex, Box, Heading } from "@chakra-ui/react";
-import { useDataContext } from "../../../../util/DataContext";
+import { useOverviewQuery } from "../../../util/queries/useOverviewQuery";
 import { Value } from "../../Containers";
 
 export const Seasonal: React.FC = () => {
-  const { overviewData: data } = useDataContext();
+  const { data } = useOverviewQuery();
 
-  return (
+  return data ? (
     <Flex align="center" justify="space-between" gridGap={2} px={8} wrap="wrap">
       <Value
         flex={1}
-        value={data!.season.kills}
+        value={data!.Response.season.kills}
         heading="Kills"
         size="xl"
         textSize="12px"
       />
       <Value
-        value={data!.season.deaths}
+        value={data!.Response.season.deaths}
         heading="Deaths"
         size="xl"
         textSize="12px"
       />
       <Value
-        value={data!.season.assists}
+        value={data!.Response.season.assists}
         heading="Assists"
         size="xl"
         textSize="12px"
       />
       <Value
-        value={data!.season.wins}
+        value={data!.Response.season.wins}
         heading="Wins"
         size="xl"
         textSize="12px"
       />
       <Value
-        value={data!.season.losses}
+        value={data!.Response.season.losses}
         heading="Lossses"
         size="xl"
         textSize="12px"
       />
     </Flex>
-  );
+  ) : null;
 };

@@ -3,13 +3,15 @@ import { AiFillEye } from "react-icons/ai";
 import { BsGlobe, BsPersonFill } from "react-icons/bs";
 import { IoLogoGameControllerB } from "react-icons/io";
 import { GiHamburgerMenu } from "react-icons/gi";
-import { useSidebarContext } from "../../util/SidebarContext";
+import { useSidebarContext } from "../util/SidebarContext";
 import React from "react";
-import { useHover } from "../../util/hooks/useHover";
+import { useHover } from "../util/hooks/handlers/useHover";
+import { useRouter } from "next/router";
 
 const SidebarHeading = () => {
   const { collapsed, setCollapsed } = useSidebarContext();
 
+  const router = useRouter();
   return (
     <Box py={4} px={2}>
       <Flex
@@ -18,7 +20,12 @@ const SidebarHeading = () => {
         align="center"
         justify="center">
         {!collapsed && (
-          <Heading size="md" color="#fbd000" mr={4}>
+          <Heading
+            size="md"
+            cursor="pointer"
+            color="#fbd000"
+            mr={4}
+            onClick={() => router.push("/")}>
             Trials Tracker
           </Heading>
         )}
@@ -40,13 +47,29 @@ const SidebarHeading = () => {
 interface SidebarItemProps {
   icon: JSX.Element;
   label: string;
+  id: string;
 }
 
-const SidebarItem: React.FC<SidebarItemProps> = ({ icon, label }) => {
+type MembershipID = string;
+
+/** TODO: Reorganize this mess */
+const SidebarItem: React.FC<SidebarItemProps> = ({ icon, label, id }) => {
+  const router = useRouter();
   const { active, setActive, collapsed } = useSidebarContext();
+
   const { ref, hovered } = useHover();
 
+  const path =
+    typeof router.query.path === "string"
+      ? (router.query.path as "overview" | "matches" | "guardians")
+      : "overview";
+  const parsedRoute = path[0].toLocaleUpperCase() + path.slice(1);
+
   const [overlay, setOverlay] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    if (parsedRoute !== label) setActive(parsedRoute);
+  }, [label, parsedRoute, setActive]);
 
   React.useEffect(() => {
     if (!hovered) setOverlay(false);
@@ -62,7 +85,17 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ icon, label }) => {
   const conditionalStyles = {
     background: isActive ? "#1F1F1E" : "transparent",
     opacity: isActive ? 1 : 0.6,
-    onClick: () => (isActive ? null : setActive(label)),
+    onClick: () => {
+      if (isActive) return;
+      setActive(label);
+      router.push(
+        { pathname: `/${id}/`, query: { path: label.toLocaleLowerCase() } },
+        undefined,
+        {
+          shallow: true,
+        }
+      );
+    },
     _hover: isActive ? {} : { opacity: 1, background: "#1F1F1E" },
     color: isActive ? (collapsed ? "#FBD000" : "white") : "white",
     px: collapsed ? 0 : 4,
@@ -101,6 +134,9 @@ const SidebarItem: React.FC<SidebarItemProps> = ({ icon, label }) => {
 
 export const Sidebar = () => {
   const { collapsed } = useSidebarContext();
+  const { query } = useRouter();
+
+  const id = typeof query.id === "string" ? query.id : "";
 
   const SidebarContainer: React.FC = ({ children }) => (
     <Box
@@ -112,18 +148,22 @@ export const Sidebar = () => {
     </Box>
   );
 
-  return (
+  return id.length > 0 ? (
     <SidebarContainer>
       <Flex h="100%" direction="column" justify="space-between">
         <Box>
           <SidebarHeading />
           <Stack spacing="12px" my={2} px={collapsed ? 1 : 4}>
-            <SidebarItem icon={<BsGlobe />} label="Overview" />
-            <SidebarItem icon={<IoLogoGameControllerB />} label="Matches" />
-            <SidebarItem icon={<BsPersonFill />} label="Guardians" />
+            <SidebarItem icon={<BsGlobe />} label="Overview" id={id} />
+            <SidebarItem
+              icon={<IoLogoGameControllerB />}
+              label="Matches"
+              id={id}
+            />
+            <SidebarItem icon={<BsPersonFill />} label="Guardians" id={id} />
           </Stack>
         </Box>
       </Flex>
     </SidebarContainer>
-  );
+  ) : null;
 };

@@ -1,40 +1,40 @@
 import { Box, Heading, Flex, Text } from "@chakra-ui/react";
-import { useDataContext } from "../../../../util/DataContext";
+import { useOverviewQuery } from "../../../util/queries/useOverviewQuery";
 import { Value } from "../../Containers";
 
 export const WeeklyStats: React.FC = () => {
-  const { overviewData: data } = useDataContext();
+  const { data } = useOverviewQuery();
 
-  return data ? (
+  return data && data.Response ? (
     <Flex align="center" justify="center" gridGap={4}>
       <Value
         size="lg"
         textAlign="center"
         heading="Kills"
-        value={data.currentStats.kills}
+        value={data.Response.currentStats.kills}
       />
       <Value
         size="lg"
         heading="Deaths"
-        value={Math.round(data.currentStats.deaths) || 0}
+        value={Math.round(data.Response.currentStats.deaths) || 0}
       />
       <Value
         textAlign="center"
         size="lg"
         heading="Wins"
-        value={data.currentStats.wins}
+        value={data.Response.currentStats.wins}
       />
       <Value
         textAlign="center"
         size="lg"
         heading="Losses"
-        value={data.currentStats.losses}
+        value={data.Response.currentStats.losses}
       />
       <Value
         textAlign="center"
         size="lg"
         heading="Flawless"
-        value={data.currentStats.flawless}
+        value={data.Response.currentStats.flawless}
       />
     </Flex>
   ) : null;

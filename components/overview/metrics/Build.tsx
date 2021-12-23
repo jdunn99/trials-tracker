@@ -1,7 +1,8 @@
 import { Flex, Box, Heading, Text, Image, Stack } from "@chakra-ui/react";
 import React from "react";
-import { useDataContext } from "../../../../util/DataContext";
-import { Subclass, Weapon } from "../../../../util/types";
+import { useOverviewQuery } from "../../../util/queries/useOverviewQuery";
+import { Subclass, Weapon } from "../../../util/types";
+import { WeaponItem } from "../../Weapon";
 
 interface ClassProps {
   subclass: Subclass;
@@ -14,15 +15,17 @@ interface WeaponsProps {
 interface BuildContainerProps {
   size: string;
   src: string;
+  key?: any;
 }
 
 const BuildContainer: React.FC<BuildContainerProps> = ({
   size,
   src,
+  key,
   children,
 }) => {
   return (
-    <Flex align="center" gridGap={2}>
+    <Flex align="center" gridGap={2} key={key}>
       <Image width={size} height={size} src={src} rounded="md" alt={src} />
       <Box>{children}</Box>
     </Flex>
@@ -50,28 +53,19 @@ const WeaponsBuild: React.FC<WeaponsProps> = ({ weapons }) => {
   return (
     <Stack spacing={2} mt={4}>
       {weapons.map((weapon) => (
-        <BuildContainer src={weapon.imageUrl} size="44px" key={weapon.hash}>
-          <Box>
-            <Heading size="sm" color="white">
-              {weapon.name}
-            </Heading>
-            <Text fontSize="13px" color="white">
-              {weapon.subTitle}
-            </Text>
-          </Box>
-        </BuildContainer>
+        <WeaponItem {...weapon} key={weapon.hash} />
       ))}
     </Stack>
   );
 };
 
 export const Build: React.FC = () => {
-  const { overviewData: data } = useDataContext();
+  const { data } = useOverviewQuery();
 
   return (
     <Box px={8}>
-      {data && <ClassBuild subclass={data.subclass} />}
-      {data && <WeaponsBuild weapons={data.weapons} />}
+      {data && <ClassBuild subclass={data.Response.subclass} />}
+      {data && <WeaponsBuild weapons={data.Response.weapons} />}
     </Box>
   );
 };

@@ -71,6 +71,64 @@ export interface Activity extends Ratio {
   standing: number;
 }
 
+export interface Match {
+  matchId: string;
+  period: string;
+  displayProperties: {
+    description: string;
+    name: string;
+    icon: string;
+  };
+  kills: number;
+  deaths: number;
+  killsDeathsRatio: number;
+  standing: number;
+  character: string;
+  class: string;
+}
+
+export interface MatchesResponse {
+  Response: {
+    matches: Match[];
+  };
+  pages: {
+    [key: string]: {
+      page: number;
+      count: number;
+      class: string;
+    };
+  };
+}
+
+export interface PostGameReport {
+  referenceId: number;
+  instanceId: string;
+  displayProperties: {
+    description: string;
+    name: string;
+    icon: string;
+  };
+  characters: Array<{
+    characterId: string;
+    kills: number;
+    deaths: number;
+    imageUrl: string;
+    displayName: string;
+    membershipType: number;
+    membershipId: string;
+    weapon: {
+      information: {
+        displayProperties: {
+          description: string;
+          name: string;
+          icon: string;
+        };
+      };
+      kils: number;
+    } | null;
+  }>;
+}
+
 export interface OverviewResponse extends Report {
   weapons: Weapon[];
   timePlayed: number;
@@ -104,34 +162,7 @@ export interface OverviewResponse extends Report {
     assists: number;
     losses: number;
   }>;
-  bestGame: {
-    referenceId: number;
-    instanceId: string;
-    displayProperties: {
-      description: string;
-      name: string;
-      icon: string;
-    };
-    characters: Array<{
-      characterId: string;
-      kills: number;
-      deaths: number;
-      imageUrl: string;
-      displayName: string;
-      membershipType: number;
-      membershipId: string;
-      weapon: {
-        information: {
-          displayProperties: {
-            description: string;
-            name: string;
-            icon: string;
-          };
-        };
-        kils: number;
-      } | null;
-    }>;
-  };
+  bestGame: PostGameReport;
 }
 
 export interface Profile {
@@ -139,7 +170,7 @@ export interface Profile {
   membershipType: number;
   bungieName: string;
   avatarUrl: string;
-  status: string;
+  status: string | undefined;
   platforms: number[];
   character: Character;
 }

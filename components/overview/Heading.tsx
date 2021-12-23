@@ -1,7 +1,6 @@
 import { Flex, Box, Badge, Text, Image, Heading } from "@chakra-ui/react";
-import { useDataContext } from "../../../util/DataContext";
-import { mapIcon } from "../../../util/functions";
-import { User } from "../../../util/UserContext";
+import { mapIcon } from "../../util/functions";
+import { useProfileQuery } from "../../util/queries/useProfileQuery";
 import { Searchbar } from "../Searchbar";
 
 interface HeadingProps {
@@ -9,13 +8,26 @@ interface HeadingProps {
 }
 
 export const Header: React.FC<HeadingProps> = ({ isSmall }) => {
-  const { profileData: data } = useDataContext();
+  const { data } = useProfileQuery();
 
-  const parsed = data ? data.bungieName.split("#") : "";
+  const temp = data as any;
 
-  return data ? (
-    <Flex align="center" flex={1} flexDir={{ base: "column", lg: "row" }}>
-      <Image src={data.avatarUrl} mr={4} rounded="md" alt="" w="64px" />
+  const parsed =
+    temp && temp.Response ? temp.Response.bungieName.split("#") : "";
+
+  return data && temp.Response ? (
+    <Flex
+      align="center"
+      flex={1}
+      mb={1}
+      flexDir={{ base: "column", lg: "row" }}>
+      <Image
+        src={`https://bungie.net/${temp.Response.avatarUrl}`}
+        mr={4}
+        rounded="md"
+        alt=""
+        w="64px"
+      />
 
       <Box textAlign={{ base: "center", lg: "left" }}>
         <Flex align="center">
@@ -24,9 +36,11 @@ export const Header: React.FC<HeadingProps> = ({ isSmall }) => {
             #{parsed[1]}
           </Badge>
         </Flex>
-        <Text opacity={0.6} color="white">
-          {data.status}
-        </Text>
+        {temp.Response.status && (
+          <Text opacity={0.6} color="white">
+            {temp.Response.status}
+          </Text>
+        )}
       </Box>
       <Box mb={{ base: "2rem", lg: 0 }} flex={1}>
         {isSmall ? null : (
@@ -35,7 +49,7 @@ export const Header: React.FC<HeadingProps> = ({ isSmall }) => {
           </Flex>
         )}
         <Flex gridGap={2} ml={{ base: 0, lg: 4 }} mt={2} justify="flex-end">
-          {data.platforms.map((item: number) => (
+          {temp.Response.platforms.map((item: number) => (
             <Heading
               size="md"
               color="white"
