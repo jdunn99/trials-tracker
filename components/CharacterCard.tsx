@@ -1,7 +1,4 @@
 import { Box, Flex, Heading, Text } from "@chakra-ui/react";
-import { useDataContext } from "../util/DataContext";
-import { useOverviewQuery } from "../util/queries/useOverviewQuery";
-import { Character } from "../util/types";
 
 interface CharacterCardProps {
   isSmall?: boolean;
