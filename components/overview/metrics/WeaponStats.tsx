@@ -1,4 +1,4 @@
-import { Stack, Flex, Box, Heading, Image } from "@chakra-ui/react";
+import { Stack, Flex, Box, Heading, Img } from "@chakra-ui/react";
 import { useOverviewQuery } from "../../../util/queries/useOverviewQuery";
 import { Value } from "../../Containers";
 
@@ -12,24 +12,18 @@ export const WeaponStats: React.FC<WeaponStatsProps> = ({ isSmall }) => {
   return (
     <Stack spacing={2} px={8}>
       {data &&
-        data.Response.weaponsStats.data.map((weapon: any) => (
+        data.Response.weaponsStats.data.map((weapon: any, index: number) => (
           <Flex
             align="center"
             gridGap={2}
             flexDir={isSmall ? "column" : "row"}
             justify={isSmall ? "center" : "space-between"}
-            key={weapon.hash}>
+            key={index}>
             <Flex
               align="center"
               gridGap={2}
               flexDir={isSmall ? "column" : "row"}>
-              <Image
-                w="44px"
-                h="44px"
-                src={weapon.iconUrl}
-                alt=""
-                rounded="md"
-              />
+              <Img w="44px" h="44px" src={weapon.iconUrl} alt="" rounded="md" />
               <Heading size="md" color="white">
                 {weapon.name}
               </Heading>

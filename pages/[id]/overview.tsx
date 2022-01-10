@@ -35,6 +35,7 @@ import {
 } from "../../util/queries/useOverviewQuery";
 import { useProfileQuery } from "../../util/queries/useProfileQuery";
 import { useError } from "../../util/hooks/useError";
+import { Game } from "../../components/Game";
 
 interface ContentProps {
   loading: boolean;
@@ -74,7 +75,12 @@ const Content: React.FC<ContentProps> = ({ loading }) => {
                 className={data.Response.character.class}
               />
               <Flex flex={1} gridGap={4}>
-                <MetricContainer flex={1} maxH="310px">
+                <MetricContainer
+                  flex={1}
+                  maxH="310px"
+                  h={
+                    data?.Response?.activities?.length > 0 ? "initial" : "310px"
+                  }>
                   <MetricHeading>Recent Matches</MetricHeading>
                   <Matches activities={data.Response.activties} />
                 </MetricContainer>
@@ -85,13 +91,15 @@ const Content: React.FC<ContentProps> = ({ loading }) => {
                 <MetricHeading>Season 15 Stats</MetricHeading>
                 <Seasonal />
               </MetricContainer>
-              <MetricContainer flex={1} maxH="285px">
+              <MetricContainer maxH="290px" h="290px">
                 <MetricHeading>Best Game</MetricHeading>
-                <BestGame />
+                {data.Response.bestGame && (
+                  <Game data={data.Response.bestGame} variant="sm" />
+                )}
               </MetricContainer>
             </Flex>
 
-            <MetricContainer flex={2} maxH="425px" minWidth="33%">
+            <MetricContainer flex={2} h="425px" minWidth="33%">
               <MetricHeading>This Week</MetricHeading>
               <WeeklyStats />
               <MetricHeading mt={1}>Last Used Build</MetricHeading>

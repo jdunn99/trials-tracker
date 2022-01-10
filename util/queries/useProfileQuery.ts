@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { QueryClient, useQuery } from "react-query";
+import { SERVER_URL } from "../constants";
 import { useRouterQuery } from "../hooks/router/useRouterQuery";
 import { fetchOverview } from "./useOverviewQuery";
 
@@ -13,10 +14,7 @@ type Profile = {
 };
 
 export const fetchProfile = async (value: string): Promise<Profile> => {
-  console.log("fetching profile: ", value);
-  const response = await fetch(
-    `http://localhost:4000/destiny/profile/${value}`
-  );
+  const response = await fetch(`${SERVER_URL}/${value}/profile`);
   const json = await response.json();
   return json;
 };

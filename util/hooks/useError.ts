@@ -13,14 +13,16 @@ export const useError = <T>(data: QueryData<T>) => {
 
   React.useEffect(() => {
     if (data && data.Error) {
-      data.Error.forEach((error: any) => {
-        toast({
-          title: "Error",
-          description: error.ErrorMessage,
-          status: "error",
-          duration: 2000,
+      console.log(data.Error);
+      if (typeof data.Error === "object")
+        data.Error.forEach((error: any) => {
+          toast({
+            title: "Error",
+            description: error.ErrorMessage,
+            status: "error",
+            duration: 2000,
+          });
         });
-      });
       push("/");
     }
   }, [data, toast, push]);

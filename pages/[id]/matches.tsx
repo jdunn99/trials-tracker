@@ -186,17 +186,9 @@ const Content: React.FC<{ loading: boolean }> = ({ loading }) => {
                   <Spinner color="#fbd000" />
                 </Flex>
               )}
-            <Box
-              display={
-                isFetchingNextPage && !hasNextPage && filteredMatches.length > 0
-                  ? "none"
-                  : "initial"
-              }
-              h="5px"
-              w="100%"
-              background="green"
-              ref={target}
-            />
+            {!isFetchingNextPage && hasNextPage && hasNoFilters(filters) && (
+              <Box h="5px" w="100%" ref={target} />
+            )}
           </Box>
         )}
         {loading && (
@@ -212,7 +204,6 @@ const Content: React.FC<{ loading: boolean }> = ({ loading }) => {
 export const MatchesPage: NextPage = () => {
   const { isLoading, isError } = useMatchesQuery();
   const { isLoading: loading } = useProfileQuery();
-  console.log(loading, isError);
 
   return (
     <Box w="100%" maxH="100vh" overflow="auto">

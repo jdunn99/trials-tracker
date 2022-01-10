@@ -3,7 +3,7 @@ import {
   Flex,
   Heading,
   Text,
-  Image,
+  Img,
   styled,
   Stack,
   useBreakpointValue,
@@ -33,7 +33,7 @@ const Stat: React.FC<{ value: string; imgSrc: string }> = ({
       <Text color="white" fontWeight="bold" fontSize="18px">
         {value}
       </Text>
-      <Image src={imgSrc} alt={value} w="2rem" />
+      <Img src={imgSrc} alt={value} w="2rem" />
     </Flex>
   );
 };
@@ -82,16 +82,17 @@ export const Guardians: NextPage = () => {
               data.Response.characters.length < 3 ? "center" : "space-around"
             }
             gridGap={4}
-            w="90%"
+            px={14}
+            w="100%"
             mx="auto">
             {data.Response.characters.map((character: any) => (
-              <Box key={character.characterId} flex={1} w="100%">
+              <Box key={character.characterId} flex={1} w="100%" pt={2}>
                 <CharacterCard
                   isSmall={true}
                   {...character}
                   className={character.class.className}
                 />
-                <Box w="100%" background="#171717" roundedBottom="lg">
+                <Box w="100%" background="#171717">
                   <Flex
                     align="center"
                     gridGap={4}

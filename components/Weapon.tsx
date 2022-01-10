@@ -1,4 +1,4 @@
-import { Box, Text, Heading, Flex, Image } from "@chakra-ui/react";
+import { Box, Text, Heading, Flex, Img } from "@chakra-ui/react";
 import React from "react";
 import { useHover } from "../util/hooks/handlers/useHover";
 import { BuildContainer, Value } from "./Containers";
@@ -33,7 +33,7 @@ const Perk: React.FC<PerksProps> = ({ name, icon, description }) => {
   return (
     <React.Fragment>
       <Flex align="center" gridGap={1} ref={ref}>
-        <Image
+        <Img
           w="1.25rem"
           src={"https://bungie.net/" + icon}
           alt={name}

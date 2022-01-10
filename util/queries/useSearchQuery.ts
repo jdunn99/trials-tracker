@@ -1,8 +1,9 @@
 import { useQuery } from "react-query";
+import { SERVER_URL } from "../constants";
 
 const search = async (value: string): Promise<any> => {
   const response = await fetch(
-    `http://localhost:4000/destiny/users/${encodeURIComponent(value)}`
+    `${SERVER_URL}/users/${encodeURIComponent(value)}`
   );
   const json = await response.json();
   return json.data;

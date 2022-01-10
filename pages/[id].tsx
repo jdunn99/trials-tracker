@@ -1,5 +1,9 @@
 import { Flex, Box, Spinner } from "@chakra-ui/react";
-import { GetServerSideProps, NextPage } from "next";
+import {
+  GetServerSideProps,
+  InferGetServerSidePropsType,
+  NextPage,
+} from "next";
 import Router from "next/dist/server/router";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -20,22 +24,27 @@ import { handleGuardiansSSSG } from "../util/queries/useGuardiansQuery";
 import { Guardians } from "./[id]/guardians";
 import { useRouterQuery } from "../util/hooks/router/useRouterQuery";
 
-const Page: NextPage = () => {
-  const { id, path } = useRouterQuery(["id", "path"]);
+const Page: NextPage = ({
+  pathFromSSR,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  const { path } = useRouterQuery(["path"]);
+
+  // dynamically SSR one page and then render it, build other pages on client.
+  const renderPath = React.useMemo(() => {
+    return path || pathFromSSR;
+  }, [pathFromSSR, path]);
 
   return (
     <div className={styles.container}>
       <Head>
-        <title>
-          Trials Tracker - {path[0].toLocaleUpperCase() + path.slice(1)}
-        </title>
+        <title>Trials Tracker</title>
       </Head>
       <Flex w="100%">
         <Sidebar />
         <Box w="100%" maxH="100vh" overflow="auto">
-          {path === "overview" && <Overview />}
-          {path === "matches" && <MatchesPage />}
-          {path === "guardians" && <Guardians />}
+          {renderPath === "overview" && <Overview />}
+          {renderPath === "matches" && <MatchesPage />}
+          {renderPath === "guardians" && <Guardians />}
         </Box>
       </Flex>
     </div>
@@ -62,6 +71,7 @@ const handleSSR = async (
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   let { path, id } = query;
+  console.log(query);
   path = typeof path === "string" ? path : "overview";
   id = typeof id === "string" ? id : "";
 
@@ -77,6 +87,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   return {
     props: {
       dehydratedState: JSON.parse(JSON.stringify(dehydrate(queryClient))),
+      pathFromSSR: path,
     },
   };
 };

@@ -1,10 +1,9 @@
 import { useRouter } from "next/router";
 import { QueryClient, useQuery } from "react-query";
+import { SERVER_URL } from "../constants";
 
 export const fetchOverview = async (value: string): Promise<any> => {
-  const response = await fetch(
-    `http://localhost:4000/destiny/overview/${value}`
-  );
+  const response = await fetch(`${SERVER_URL}/${value}/overview`);
   const json = await response.json();
   return json;
 };

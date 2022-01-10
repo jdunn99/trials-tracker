@@ -1,4 +1,4 @@
-import { Flex, Box, Badge, Text, Image, Heading } from "@chakra-ui/react";
+import { Flex, Box, Badge, Text, Img, Heading } from "@chakra-ui/react";
 import { mapIcon } from "../../util/functions";
 import { useProfileQuery } from "../../util/queries/useProfileQuery";
 import { Searchbar } from "../Searchbar";
@@ -21,7 +21,7 @@ export const Header: React.FC<HeadingProps> = ({ isSmall }) => {
       flex={1}
       mb={1}
       flexDir={{ base: "column", lg: "row" }}>
-      <Image
+      <Img
         src={`https://bungie.net/${temp.Response.avatarUrl}`}
         mr={4}
         rounded="md"

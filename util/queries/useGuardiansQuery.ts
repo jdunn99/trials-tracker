@@ -1,11 +1,9 @@
 import { useRouter } from "next/router";
 import { QueryClient, useQuery } from "react-query";
+import { SERVER_URL } from "../constants";
 
 const fetchGuardians = async (membershipId: string) => {
-  console.log(membershipId);
-  const response = await fetch(
-    `http://localhost:4000/destiny/guardians/${membershipId}`
-  );
+  const response = await fetch(`${SERVER_URL}/${membershipId}/guardians`);
 
   return await response.json();
 };

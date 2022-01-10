@@ -4,7 +4,7 @@ import {
   Heading,
   Stack,
   Text,
-  Image,
+  Img,
   Spinner,
 } from "@chakra-ui/react";
 import { match } from "assert";
@@ -78,7 +78,7 @@ const Match: React.FC<{ match: Match; pages: any }> = ({ match, pages }) => {
               />
             </Box>
             <Box flex={1}>
-              <Image
+              <Img
                 w="40px"
                 src={
                   CLASS_IMAGES[
@@ -99,7 +99,7 @@ const Match: React.FC<{ match: Match; pages: any }> = ({ match, pages }) => {
               <Spinner color="#fbd000" />
             </Flex>
           ) : (
-            data && <Game data={data.Response} score={[5, 2]} />
+            data && <Game data={data.Response} />
           )}
         </Box>
       ) : null}

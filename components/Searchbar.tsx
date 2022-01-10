@@ -35,7 +35,6 @@ const SearchbarInput: React.FC<SearchbarInputProps> = ({
       <Input
         _focus={{
           border: "none",
-          borderBottom: "1px solid #171717",
           background: "#171717",
         }}
         border="none"
@@ -65,7 +64,7 @@ const SearchResult: React.FC<SearchResultProps> = ({
   result,
   isLoading,
 }) => {
-  return active ? (
+  return active && result && result.length > 0 ? (
     <Flex
       position="relative"
       flexDir="column"
@@ -138,8 +137,7 @@ export const Searchbar: React.FC = () => {
     setActive(false);
   });
 
-  const { isLoading, isError, isSuccess, data } =
-    useSearchQuery(debouncedInput);
+  const { isLoading, data } = useSearchQuery(debouncedInput);
 
   const shouldRender = data && data.length > 0;
   return (
@@ -148,7 +146,7 @@ export const Searchbar: React.FC = () => {
         <SearchbarInput
           onFocus={() => setActive(true)}
           onChange={(event) => setInput(event.target.value)}
-          roundedBottom={active ? "none" : "md"}
+          roundedBottom={!!active && shouldRender > 0 ? "none" : "md"}
           value={input}
         />
         <SearchResult active={!!active} isLoading={isLoading} result={data} />

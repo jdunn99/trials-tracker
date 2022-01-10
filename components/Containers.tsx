@@ -5,7 +5,7 @@ import {
   Heading,
   FlexProps,
   Flex,
-  Image,
+  Img,
 } from "@chakra-ui/react";
 
 export const MetricHeading: React.FC<BoxProps> = ({ children, ...rest }) => (
@@ -19,11 +19,19 @@ export const MetricHeading: React.FC<BoxProps> = ({ children, ...rest }) => (
   </Text>
 );
 
-export const MetricContainer: React.FC<BoxProps> = ({ children, ...rest }) => (
-  <Box {...rest} py={4} rounded="lg" background="#171717" overflow="auto">
-    {children}
-  </Box>
-);
+export const MetricContainer: React.FC<BoxProps> = ({ children, ...rest }) => {
+  const { overflow } = rest;
+  return (
+    <Box
+      {...rest}
+      py={4}
+      rounded="lg"
+      background="#171717"
+      overflow={overflow ?? "auto"}>
+      {children}
+    </Box>
+  );
+};
 
 interface ValueProps extends FlexProps {
   heading: string;
@@ -68,7 +76,7 @@ export const BuildContainer: React.FC<BuildContainerProps> = ({
 }) => {
   return (
     <Flex align="center" gridGap={2} key={key}>
-      <Image width={size} height={size} src={src} rounded="md" alt={src} />
+      <Img width={size} height={size} src={src} rounded="md" alt={src} />
       <Box>{children}</Box>
     </Flex>
   );

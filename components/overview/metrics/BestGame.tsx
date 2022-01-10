@@ -1,4 +1,4 @@
-import { Box, Heading, Stack, Flex, Text, Image } from "@chakra-ui/react";
+import { Box, Heading, Stack, Flex, Text, Img } from "@chakra-ui/react";
 import { useOverviewQuery } from "../../../util/queries/useOverviewQuery";
 import { OverviewResponse } from "../../../util/types";
 import { Value } from "../../Containers";
@@ -15,7 +15,7 @@ const Character: React.FC<CharacterProps> = ({ index, data, offset }) => {
   return data ? (
     <Flex justify="space-between" flex={1} pr={4}>
       <Flex align="center" gridGap={2}>
-        <Image
+        <Img
           src={`https://bungie.net/${data!.bestGame.characters[item].imageUrl}`}
           alt=""
           w="30px"
@@ -28,7 +28,7 @@ const Character: React.FC<CharacterProps> = ({ index, data, offset }) => {
 
           {data!.bestGame.characters[item].weapon && (
             <Flex align="center" gridGap={2} opacity={0.6}>
-              <Image
+              <Img
                 src={`https://bungie.net/${
                   data!.bestGame.characters[item].weapon!.information
                     .displayProperties.icon

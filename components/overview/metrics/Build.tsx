@@ -1,4 +1,4 @@
-import { Flex, Box, Heading, Text, Image, Stack } from "@chakra-ui/react";
+import { Flex, Box, Heading, Text, Img, Stack } from "@chakra-ui/react";
 import React from "react";
 import { useOverviewQuery } from "../../../util/queries/useOverviewQuery";
 import { Subclass, Weapon } from "../../../util/types";
@@ -26,7 +26,7 @@ const BuildContainer: React.FC<BuildContainerProps> = ({
 }) => {
   return (
     <Flex align="center" gridGap={2} key={key}>
-      <Image width={size} height={size} src={src} rounded="md" alt={src} />
+      <Img width={size} height={size} src={src} rounded="md" alt={src} />
       <Box>{children}</Box>
     </Flex>
   );
@@ -52,8 +52,8 @@ const ClassBuild: React.FC<ClassProps> = ({ subclass }) => {
 const WeaponsBuild: React.FC<WeaponsProps> = ({ weapons }) => {
   return (
     <Stack spacing={2} mt={4}>
-      {weapons.map((weapon) => (
-        <WeaponItem {...weapon} key={weapon.hash} />
+      {weapons.map((weapon, index) => (
+        <WeaponItem {...weapon} key={index} />
       ))}
     </Stack>
   );

@@ -1,27 +1,41 @@
-import { Box, Heading, Stack, Flex, Text, Image, Grid } from "@chakra-ui/react";
+import { Box, Heading, Stack, Flex, Text, Img, Grid } from "@chakra-ui/react";
 import { OverviewResponse, PostGameReport } from "../util/types";
 import { Value } from "./Containers";
 
 interface CharacterProps {
   character: any;
+  variant: "sm" | "lg";
 }
 
-const Character: React.FC<CharacterProps> = ({ character }) => {
+const styles = {
+  sm: {
+    imgProps: {
+      height: "30px",
+      width: "30px",
+    },
+  },
+  lg: {
+    imgProps: {
+      height: "44px",
+      width: "44px",
+    },
+  },
+};
+
+const Character: React.FC<CharacterProps> = ({ character, variant }) => {
   return (
     <Flex
       justify={{ base: "center", lg: "space-between" }}
-      flexDir={{ base: "column", lg: "row" }}
       wrap="wrap"
-      pr={4}>
+      flexDir={{ base: "column", lg: "row" }}>
       <Flex
         align="center"
         justify={{ base: "center", lg: "initial" }}
         gridGap={2}>
-        <Image
+        <Img
           src={`https://bungie.net/${character.imageUrl}`}
           alt=""
-          w="44px"
-          h="44px"
+          {...styles[variant].imgProps}
         />
         <Box>
           <Heading size="sm" color="white">
@@ -30,17 +44,15 @@ const Character: React.FC<CharacterProps> = ({ character }) => {
 
           {character.weapon && (
             <Flex align="center" gridGap={2} opacity={0.6}>
-              <Image
-                src={`https://bungie.net/${
-                  character.weapon!.information.displayProperties.icon
-                }`}
+              <Img
+                src={`https://bungie.net/${character.weapon?.information?.displayProperties?.icon}`}
                 alt=""
                 w="24px"
                 h="24px"
                 rounded="sm"
               />
               <Text color="white" fontSize="12px">
-                {character.weapon!.information.displayProperties.name}
+                {character.weapon?.information?.displayProperties?.name}
               </Text>
             </Flex>
           )}
@@ -59,33 +71,43 @@ const Character: React.FC<CharacterProps> = ({ character }) => {
 
 interface GameProps {
   data: PostGameReport;
-  heading?: string;
-  score?: number[];
+  variant?: "lg" | "sm";
 }
-export const Game: React.FC<GameProps> = ({ data, heading, score }) => {
-  const mid = data.characters.length / 2;
+
+export const Game: React.FC<GameProps> = ({ data, variant = "lg" }) => {
   return (
-    <Box px={{ base: "4rem", lg: "6rem" }} color="white">
+    <Box color="white" px={8} flex={1} w="100%">
       <Heading size="md" color="white">
-        {heading}
+        {data.displayProperties.name}
       </Heading>
 
-      <Flex align="center" gridGap={8} flexDir={{ base: "column", lg: "row" }}>
-        <Box w="16px" h="16px" rounded="50%" background="green.500" />
+      <Flex
+        align="center"
+        gridGap={4}
+        pt={4}
+        flexDir={{ base: "column", lg: "row" }}>
+        {variant === "lg" && (
+          <Box h="16px" w="16px" rounded="50%" background="green.500" />
+        )}
 
         <Grid
           flex={1}
-          w="100%"
           templateColumns={{ base: "1fr", lg: "repeat(2, 1fr)" }}
           gridTemplateRows={{ base: "1fr", lg: "repeat(3, 1fr)" }}
           gridAutoFlow={{ base: "row", lg: "column" }}
-          gridGap={8}>
+          gridGap={4}>
           {data.characters.map((character) => (
-            <Character character={character} key={character.characterId} />
+            <Character
+              character={character}
+              key={character.characterId}
+              variant={variant}
+            />
           ))}
         </Grid>
 
-        <Box w="16px" h="16px" rounded="50%" background="red.500" />
+        {variant === "lg" && (
+          <Box h="16px" w="16px" rounded="50%" background="red.500" />
+        )}
       </Flex>
     </Box>
   );

@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import { QueryClient, useInfiniteQuery, useQuery } from "react-query";
+import { SERVER_URL } from "../constants";
 import { MatchesResponse } from "../types";
 
 export type Page =
@@ -41,7 +42,7 @@ const fetchMatches = async (
   }
 
   const response = await fetch(
-    `http://localhost:4000/destiny/matches/${membershipId}/${pageQuery}`
+    `${SERVER_URL}/${membershipId}/matches${pageQuery}`
   );
 
   console.log(response);

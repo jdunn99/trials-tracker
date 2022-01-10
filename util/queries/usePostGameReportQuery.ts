@@ -1,9 +1,8 @@
 import { useQuery } from "react-query";
+import { SERVER_URL } from "../constants";
 
 const fetchPostGameReport = async (activityId: string) => {
-  const response = await fetch(
-    `http://localhost:4000/destiny/match/${activityId}`
-  );
+  const response = await fetch(`${SERVER_URL}/match/${activityId}`);
 
   const json = await response.json();
   return json;
