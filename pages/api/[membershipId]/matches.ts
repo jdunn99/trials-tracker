@@ -136,13 +136,9 @@ const paginateResults = (
   matches: { [key: string]: any },
   characters: PaginatedCharacter
 ) => {
-  console.log(characters);
-
   const temp = { ...characters };
 
-  const filtered: any[] = Object.values(matches).filter(
-    (match: any) => match !== null
-  );
+  const filtered: any[] = Object.values(matches).filter((match: any) => match);
 
   // parse our 2d array into a single sorted array
   const paginatedResults: any[] = []
@@ -154,7 +150,6 @@ const paginateResults = (
 
   paginatedResults.forEach((match: any) => {
     const page = temp[match.character];
-    console.log(page);
     if (page.count !== 0) {
       const result = (page.count + 1) % 25;
       if (result === 0) page.page++;
