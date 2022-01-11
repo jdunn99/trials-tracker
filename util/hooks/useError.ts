@@ -4,7 +4,7 @@ import React from "react";
 
 interface QueryData<T> {
   Response: T;
-  Error: any[];
+  Errors: any[];
 }
 
 export const useError = <T>(data: QueryData<T>) => {
@@ -12,10 +12,10 @@ export const useError = <T>(data: QueryData<T>) => {
   const { push } = useRouter();
 
   React.useEffect(() => {
-    if (data && data.Error) {
-      console.log(data.Error);
-      if (typeof data.Error === "object")
-        data.Error.forEach((error: any) => {
+    if (data && data.Errors) {
+      console.log(data.Errors);
+      if (typeof data.Errors === "object")
+        data.Errors.forEach((error: any) => {
           toast({
             title: "Error",
             description: error.ErrorMessage,

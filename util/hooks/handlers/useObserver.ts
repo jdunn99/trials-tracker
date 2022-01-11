@@ -1,38 +1,35 @@
 import React from "react";
 
-export const useObserver = (callback: () => void) => {
-  const target = React.useRef<any>(null);
-
-  const handleIntersection = React.useCallback(
-    (entries: IntersectionObserverEntry[]) => {
-      const [entry] = entries;
-      if (entry.isIntersecting && Math.floor(entry.intersectionRatio) === 1)
-        callback();
-    },
-    [callback]
-  );
-
+export const useObserver = (
+  target: React.MutableRefObject<any>,
+  callback: () => void,
+  enabled: boolean
+) => {
   const intersectionOptions = React.useMemo(
     () => ({
       root: null,
       rootMargin: "0px",
-      threshold: 0.5,
+      threshold: 1.0,
     }),
     []
   );
 
   React.useEffect(() => {
+    if (!enabled) return;
+
     const observer = new IntersectionObserver(
-      handleIntersection,
+      (entries) =>
+        entries.forEach((entry) => entry.isIntersecting && callback()),
       intersectionOptions
     );
-    const targetNode = target.current;
-    if (targetNode) observer.observe(targetNode);
+    const targetNode = target && target.current;
+
+    if (!targetNode) return;
+
+    observer.observe(targetNode);
 
     return () => {
-      if (targetNode) observer.unobserve(targetNode);
+      observer.unobserve(targetNode);
     };
-  }, [target, intersectionOptions, handleIntersection]);
-
-  return { target };
+  }, [target, enabled, intersectionOptions, callback]);
 };

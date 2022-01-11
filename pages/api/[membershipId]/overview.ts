@@ -190,6 +190,7 @@ const getUserOverview = async (req: NextApiRequest, res: NextApiResponse) => {
     const membershipId = req.query.membershipId as string;
     // get the trials stats response
     const trialsResponse = await BungieClient.getTrialsResponse(membershipId);
+    console.log(trialsResponse);
     if (trialsResponse.Errors) throw trialsResponse.Errors;
 
     // since he handled errors earlier, data is always defined @ this point
@@ -224,8 +225,8 @@ const getUserOverview = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
   } catch (error: any) {
-    console.log(error.toString() || JSON.stringify(error));
-    res.status(400).json({ Error: error });
+    console.log(error);
+    res.status(400).json(error);
   }
 };
 

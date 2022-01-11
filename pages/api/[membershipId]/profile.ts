@@ -34,11 +34,11 @@ const getProfile = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const membershipId = req.query.membershipId as string;
 
-    const { Response: platform } = await BungieClient.getMembershipType(
-      membershipId
-    );
+    const { Response: platform, Errors: platformErrors } =
+      await BungieClient.getMembershipType(membershipId);
 
-    if (platform === undefined) throw new Error("Something went wrong!");
+    if (platformErrors || platform === undefined)
+      throw platformErrors ?? new Error("Something went wrong!");
 
     const { Response, Errors } = await BungieClient.getProfile<any>(
       platform,
@@ -82,7 +82,7 @@ const getProfile = async (req: NextApiRequest, res: NextApiResponse) => {
 
     res.status(200).json({ Response: profile });
   } catch (e: any) {
-    res.status(400).json({ Errors: e.toString() });
+    res.status(400).json({ Error: e });
   }
 };
 

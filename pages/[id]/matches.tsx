@@ -56,10 +56,16 @@ const Content: React.FC<{ loading: boolean }> = ({ loading }) => {
     useMatchesQuery();
   const [filteredMatches, setFilteredMatches] = React.useState<Match[]>([]);
 
-  const { target } = useObserver(() => {
-    if (isFetchingNextPage || (!hasNextPage && hasNoFilters(filters))) return;
-    fetchNextPage();
-  });
+  const target = React.useRef<any>(null);
+
+  useObserver(
+    target,
+    () => {
+      if (isFetchingNextPage || (!hasNextPage && hasNoFilters(filters))) return;
+      fetchNextPage();
+    },
+    !!hasNextPage
+  );
 
   const [filters, setFilters] = React.useState<Filter>({
     Map: ["All"],
@@ -186,9 +192,8 @@ const Content: React.FC<{ loading: boolean }> = ({ loading }) => {
                   <Spinner color="#fbd000" />
                 </Flex>
               )}
-            {!isFetchingNextPage && hasNextPage && hasNoFilters(filters) && (
-              <Box h="5px" w="100%" ref={target} />
-            )}
+
+            <Box h="5px" w="100%" ref={target} />
           </Box>
         )}
         {loading && (

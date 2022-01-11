@@ -37,25 +37,41 @@ const getTrialsResponse = async (
   membershipId: string
 ): Promise<BungieAPIResponse<TrialsResponse>> => {
   try {
-    const { data } = await axios.get(
-      `https://api.tracker.gg/api/v1/destiny-2/stats/trials/bungie/${membershipId}`
-    );
+    return axios
+      .get(
+        `https://api.tracker.gg/api/v1/destiny-2/stats/trials/bungie/${membershipId}`
+      )
+      .then(({ data }) => {
+        if (data.errors)
+          // const { data } = result;
 
-    // handle trials api errors
-    if (data.errors)
-      throw {
-        Errors: data.errors.map((error: any) => {
-          return {
-            ErrorCode: 404,
-            ErrorStatus: error.code,
-            ErrorMessage: error.message,
+          // handle trials api errors
+          throw {
+            Errors: data.errors.map((error: any) => {
+              return {
+                ErrorCode: 404,
+                ErrorStatus: error.code,
+                ErrorMessage: error.message,
+              };
+            }),
           };
-        }),
-      };
 
-    if (data === undefined || data.data === undefined) throw new Error();
+        if (data === undefined || data.data === undefined) throw new Error();
 
-    return { Response: data };
+        return { Response: data };
+      })
+      .catch((e) => {
+        throw {
+          Errors: [
+            {
+              ErrorCode: 5,
+              ErrorStatus: "Maintenance",
+              ErrorMessage:
+                "Destiny 2 is currently under maintenance. API is disabled.",
+            },
+          ],
+        };
+      });
   } catch (error) {
     return error as any;
   }
