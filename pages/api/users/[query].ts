@@ -8,7 +8,7 @@ export default async function handler(
 ) {
   const { query } = req.query;
   const response = await axios.get(
-    `https://api.tracker.gg/api/v2/destiny-2/standard/search?platform=bungie&query=${encodeURIComponent(
+    `${process.env.SEARCH_ENDPOINT}${encodeURIComponent(
       query.toString()
     )}&autocomplete=true`
   );

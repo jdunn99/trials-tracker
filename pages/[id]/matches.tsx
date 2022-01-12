@@ -1,29 +1,6 @@
-import {
-  Flex,
-  Box,
-  Spinner,
-  useToast,
-  useBreakpointValue,
-  Stack,
-  Text,
-  Heading,
-  Menu,
-  Button,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  Badge,
-  Image,
-} from "@chakra-ui/react";
-import { valueScaleCorrection } from "framer-motion/types/render/dom/projection/scale-correction";
-import {
-  GetServerSideProps,
-  GetStaticPaths,
-  GetStaticProps,
-  NextPage,
-} from "next";
-import Head from "next/head";
-import router, { useRouter } from "next/router";
+import { Flex, Box, Spinner, useBreakpointValue } from "@chakra-ui/react";
+import { NextPage } from "next";
+import { useRouter } from "next/router";
 import React from "react";
 import { ActiveFilters } from "../../components/matches/ActiveFilters";
 import { Filter } from "../../components/matches/manip/Filter";
@@ -58,21 +35,14 @@ const Content: React.FC<{ loading: boolean }> = ({ loading }) => {
 
   const target = React.useRef<any>(null);
 
-  useObserver(
-    target,
-    () => {
-      if (isFetchingNextPage || (!hasNextPage && hasNoFilters(filters))) return;
-      fetchNextPage();
-    },
-    !!hasNextPage
-  );
-
   const [filters, setFilters] = React.useState<Filter>({
     Map: ["All"],
     Character: ["All"],
     Status: ["All"],
     "Sort By": ["All"],
   });
+
+  useObserver(target, fetchNextPage, !!hasNextPage && hasNoFilters(filters));
 
   const changeFilter = (key: string, value: string) => {
     let parsed = [...filters[key].filter((x) => x !== value)];

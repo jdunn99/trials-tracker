@@ -14,7 +14,7 @@ export const bungieAPIFetch = async <T>(
     `https://bungie.net/Platform/Destiny2/${endpoint}`,
     {
       headers: {
-        "X-Api-Key": "7a4df634f00a42e79c67304a559812a0",
+        "X-Api-Key": process.env.API_KEY!,
       },
     }
   );

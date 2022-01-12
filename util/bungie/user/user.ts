@@ -38,9 +38,7 @@ const getTrialsResponse = async (
 ): Promise<BungieAPIResponse<TrialsResponse>> => {
   try {
     return axios
-      .get(
-        `https://api.tracker.gg/api/v1/destiny-2/stats/trials/bungie/${membershipId}`
-      )
+      .get(`${process.env.TRIALS_RESPONSE_ENDPOINT}/${membershipId}`)
       .then(({ data }) => {
         if (data.errors)
           // const { data } = result;
@@ -87,7 +85,7 @@ const getTrialsProfile = async (
 ): Promise<BungieAPIResponse<TrialsProfileResponse>> => {
   try {
     const trialsProfile = await axios.get<TrialsProfileResponse>(
-      `http://api.trialsofthenine.com/player/${membershipId}`
+      `${process.env.TRIALS_PROFILE_ENDPOINT!}/${membershipId}`
     );
 
     if (trialsProfile.data === undefined) throw new Error();
