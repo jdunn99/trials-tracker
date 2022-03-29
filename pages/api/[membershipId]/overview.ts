@@ -8,6 +8,7 @@ import {
 import hash from "../../../util/bungie/manifest/hash.json";
 import itemHash from "../../../util/bungie/manifest/inventory.json";
 import { ActivityReport } from "../../../util/bungie/activities/types";
+import axios from "axios";
 
 /**
  * Get the overall stats of a user from a Trials response in a parsed format
@@ -189,9 +190,28 @@ const getUserOverview = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const membershipId = req.query.membershipId as string;
     // get the trials stats response
-    const trialsResponse = await BungieClient.getTrialsResponse(membershipId);
-    console.log(trialsResponse);
-    if (trialsResponse.Errors) throw trialsResponse.Errors;
+    const trialsResponse = await axios
+      .get(`${process.env.TRIALS_RESPONSE_ENDPOINT}/${membershipId}`)
+      .then(({ data }) => {
+        console.log(data);
+        if (data.errors)
+          // const { data } = result;
+
+          // handle trials api errors
+          throw {
+            Errors: data.errors.map((error: any) => {
+              return {
+                ErrorCode: 404,
+                ErrorStatus: error.code,
+                ErrorMessage: error.message,
+              };
+            }),
+          };
+
+        if (data === undefined || data.data === undefined) throw new Error();
+
+        return { Response: data };
+      });
 
     // since he handled errors earlier, data is always defined @ this point
     const data = trialsResponse.Response!.data!;
