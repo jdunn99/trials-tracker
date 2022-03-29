@@ -7,11 +7,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { query } = req.query;
-  const response = await axios.get(
-    `${process.env.SEARCH_ENDPOINT}${encodeURIComponent(
-      query.toString()
-    )}&autocomplete=true`
-  );
+  const result = await BungieClient.searchByGlobalNamePost(query as string);
 
-  res.status(200).json(response.data);
+  res.status(200).json({ Response: result.Response.searchResults });
 }

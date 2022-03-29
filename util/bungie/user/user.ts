@@ -28,6 +28,19 @@ const getMembershipType = async (
   return { Response: Response!.profiles[0].membershipType };
 };
 
+const searchByGlobalNamePost = async (prefix: string) => {
+  const result = await fetch(
+    `https://bungie.net/Platform/User/Search/Prefix/${prefix}/0/`,
+    {
+      headers: {
+        "X-Api-Key": process.env.API_KEY!,
+      },
+    }
+  );
+  const json = await result.json();
+  return json;
+};
+
 /**
  * Returns the Trials response from the API
  * @param membershipId
@@ -40,6 +53,7 @@ const getTrialsResponse = async (
     return axios
       .get(`${process.env.TRIALS_RESPONSE_ENDPOINT}/${membershipId}`)
       .then(({ data }) => {
+        console.log(data);
         if (data.errors)
           // const { data } = result;
 
@@ -119,4 +133,5 @@ export const BungieUser = {
   getTrialsProfile,
   getProfile,
   getTrialsResponse,
+  searchByGlobalNamePost,
 };

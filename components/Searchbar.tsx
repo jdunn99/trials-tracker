@@ -87,12 +87,15 @@ const SearchResult: React.FC<SearchResultProps> = ({
         ) : (
           result &&
           result.map((item: any) => {
-            const parsed = item.platformUserHandle.split("#");
+            const parsed = [
+              item.bungieGlobalDisplayName,
+              item.bungieGlobalDisplayNameCode,
+            ];
             return (
-              <Box key={item.platformUserId} flex={1} w="100%" px={2}>
+              <Box key={item.bungieNetMembershipId} flex={1} w="100%" px={2}>
                 <UserCard
-                  id={item.platformUserId}
-                  avatarUrl={item.avatarUrl}
+                  id={item.destinyMemberships[0].membershipId}
+                  avatarUrl={`https://bungie.net/${item.destinyMemberships[0].iconPath}`}
                   parsed={parsed}
                   status={item.status}
                 />

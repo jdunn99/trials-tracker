@@ -43,7 +43,7 @@ export const UserCard: React.FC<UserCardProps> = ({
         rounded="md"
         color="white"
         background="#16181C">
-        <Img src={avatarUrl} width="40px" mr={2} alt="" />
+        <Img src={avatarUrl} width="32px" mr={2} alt="" />
         <Flex align="center" justify="space-between" flex={1}>
           <Box>
             <Heading fontSize="14px">{truncate(parsed[0], 16)}</Heading>
