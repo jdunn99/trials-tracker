@@ -190,31 +190,12 @@ const getUserOverview = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const membershipId = req.query.membershipId as string;
     // get the trials stats response
-    const trialsResponse = await axios
-      .get(`${process.env.TRIALS_RESPONSE_ENDPOINT}/${membershipId}`)
-      .then(({ data }) => {
-        console.log(data);
-        if (data.errors)
-          // const { data } = result;
-
-          // handle trials api errors
-          throw {
-            Errors: data.errors.map((error: any) => {
-              return {
-                ErrorCode: 404,
-                ErrorStatus: error.code,
-                ErrorMessage: error.message,
-              };
-            }),
-          };
-
-        if (data === undefined || data.data === undefined) throw new Error();
-
-        return { Response: data };
-      });
+    const trialsResponse = await axios.get(
+      `${process.env.TRIALS_RESPONSE_ENDPOINT}/${membershipId}`
+    );
 
     // since he handled errors earlier, data is always defined @ this point
-    const data = trialsResponse.Response!.data!;
+    const data = trialsResponse.data.Response!.data!;
 
     // get destiny trials profile
     const trialsProfile = await BungieClient.getTrialsProfile(membershipId);
@@ -231,6 +212,15 @@ const getUserOverview = async (req: NextApiRequest, res: NextApiResponse) => {
       if (bestGameStats.Errors) throw bestGameStats.Errors;
 
       bestGameReport = parsePostGameCarnageReport(bestGameStats.Response!);
+    }
+
+    if (data === undefined) {
+      res.status(200).json({
+        response: {
+          ...parseProfileData(profileData),
+          ...bestGameReport,
+        },
+      });
     }
 
     res.status(200).json({
